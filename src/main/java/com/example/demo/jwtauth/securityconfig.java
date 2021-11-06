@@ -37,6 +37,9 @@ public class securityconfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder(){
 		 return new BCryptPasswordEncoder();
     }
+
+
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 	    http.csrf().disable()
@@ -48,5 +51,5 @@ public class securityconfig extends WebSecurityConfigurerAdapter {
 	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	    http.addFilterBefore(jwtfilter, UsernamePasswordAuthenticationFilter.class);
 	}
-	
+
 }
