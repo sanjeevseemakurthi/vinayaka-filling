@@ -1,5 +1,6 @@
 package com.example.demo.Controllers;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +12,7 @@ import com.example.demo.jwtauth.JWTUtility;
 import com.example.demo.jwtauth.userdata;
 import com.example.demo.jwtauth.userdetailsRepository;
 
-@Controller
+@RestController
 public class settingsController {
 	
 	@Autowired
@@ -25,7 +26,6 @@ public class settingsController {
 	
 	
 	@PostMapping("api/addSettings")
-	@ResponseBody
 	public String addSettings(@RequestHeader(value = "Authorization") String authorization, @RequestBody String data) {
 
 		 String Token = authorization.replace("Bearer ","");
@@ -40,14 +40,55 @@ public class settingsController {
 		 settingsRepository.save(settingsdata);
 	return "Sucess";
 	}
-	@PostMapping("api/getSettings")
-	@ResponseBody
-	public settings[] getSettings(@RequestHeader(value = "Authorization") String authorization) {
 
+	@PostMapping("addSettingsmultiple")
+	public String addSettingsmultiple(@RequestHeader(value = "Authorization") String authorization, @RequestBody settings data[]) {
+
+		String Token = authorization.replace("Bearer ","");
+		String username = jwtUtility.getUsernameFromToken(Token);
+		userdata userdata = userdetailsRepository.findByUsername(username);
+		for (settings settingsdata:data) {
+			settingsdata.setUserid(userdata.getId());
+			settingsRepository.save(settingsdata);
+		}
+		JSONObject result = new JSONObject();
+		result.put("status","sucess");
+		return result.toString();
+	}
+	@PostMapping("deleteSettingsmultiple")
+	public String deleteSettingsmultiple(@RequestHeader(value = "Authorization") String authorization, @RequestBody settings data[]) {
+
+		String Token = authorization.replace("Bearer ","");
+		String username = jwtUtility.getUsernameFromToken(Token);
+		userdata userdata = userdetailsRepository.findByUsername(username);
+		for (settings settingsdata:data) {
+			settingsRepository.delete(settingsdata);
+		}
+		JSONObject result = new JSONObject();
+		result.put("status","sucess");
+		return result.toString();
+	}
+	@GetMapping("getSettings")
+	public String getSettings(@RequestHeader(value = "Authorization") String authorization) {
 		 String Token = authorization.replace("Bearer ","");
 		 String username = jwtUtility.getUsernameFromToken(Token);
 		 userdata userdata = userdetailsRepository.findByUsername(username);
-		settings data[] = settingsRepository.findByUserid(userdata.getId());
-	return data;
+		 settings data[] = settingsRepository.findByUserid(userdata.getId());
+		 JSONObject  result = new JSONObject ();
+		for (settings node : data ) {
+			if (result.has(node.getProperty())) {
+				JSONObject test = new JSONObject();
+				test.put("name",node.getSubproperty());
+				test.put("id",node.getId());
+				result.append(node.getProperty(), test);
+			} else {
+				result.put(node.getProperty(), new JSONArray());
+				JSONObject test = new JSONObject();
+				test.put("name",node.getSubproperty());
+				test.put("id",node.getId());
+				result.append(node.getProperty(), test);
+			}
+		}
+	return result.toString();
 	}
 }
