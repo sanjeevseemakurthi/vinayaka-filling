@@ -3,7 +3,6 @@ package com.example.demo.Controllers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.Entity.settings;
@@ -11,6 +10,8 @@ import com.example.demo.Repository.settingsRepository;
 import com.example.demo.jwtauth.JWTUtility;
 import com.example.demo.jwtauth.userdata;
 import com.example.demo.jwtauth.userdetailsRepository;
+
+import java.time.LocalDate;
 
 @RestController
 public class settingsController {
@@ -48,8 +49,23 @@ public class settingsController {
 		String username = jwtUtility.getUsernameFromToken(Token);
 		userdata userdata = userdetailsRepository.findByUsername(username);
 		for (settings settingsdata:data) {
+			settingsdata.setCreateddate(LocalDate.now());
 			settingsdata.setUserid(userdata.getId());
 			settingsRepository.save(settingsdata);
+		}
+		JSONObject result = new JSONObject();
+		result.put("status","sucess");
+		return result.toString();
+	}
+	@PostMapping("editSettingsmultiple")
+	public String editSettingsmultiple(@RequestHeader(value = "Authorization") String authorization, @RequestBody settings data[]) {
+
+		String Token = authorization.replace("Bearer ","");
+		String username = jwtUtility.getUsernameFromToken(Token);
+		userdata userdata = userdetailsRepository.findByUsername(username);
+		for (settings settingsdata:data) {
+			settingsdata.setUserid(userdata.getId());
+			settingsRepository.updatesettingsdata(settingsdata.getProperty(),settingsdata.getSubproperty(),settingsdata.getId());
 		}
 		JSONObject result = new JSONObject();
 		result.put("status","sucess");

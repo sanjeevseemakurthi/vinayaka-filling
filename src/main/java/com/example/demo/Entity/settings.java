@@ -7,6 +7,8 @@ import javax.persistence.Id;
 
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDate;
+
 @Controller
 @Entity
 public class settings {
@@ -17,6 +19,7 @@ public class settings {
 	private String subproperty;
 	private int stockleft;
 	private long userid;
+	private LocalDate createddate;
 	public Long getId() {
 		return id;
 	}
@@ -46,5 +49,13 @@ public class settings {
 	}
 	public void setUserid(long userid) {
 		this.userid = userid;
+	}
+
+	public LocalDate getCreateddate() {
+		return createddate;
+	}
+
+	public void setCreateddate(LocalDate createddate) {
+		this.createddate = createddate;
 	}
 }
