@@ -19,95 +19,156 @@ public class stocks {
 	private LocalDate initialdate;
 	private Long settingsid;
 	private String name;
-	private Long Qty;
-	private Long ammount;
-	private String stockflag;
+	private Long qty;
+	private Long amount;
+	private Boolean stockflag;
 	private String phno;
-	private LocalDate finalDate;
-	private Long amountCleared;
+	private LocalDate finaldate;
+	private Long amountcleared;
 	private Long userid;
-	private jama deposit[];
-	
+	private Deposits[] deposits;
+	private Boolean daylatest;
+	private long leftqty;
+	private long leftamount;
+
+	public long getLeftqty() {
+		return leftqty;
+	}
+
+	public void setLeftqty(long leftqty) {
+		this.leftqty = leftqty;
+	}
+
+	public long getLeftamount() {
+		return leftamount;
+	}
+
+	public void setLeftamount(long leftamount) {
+		this.leftamount = leftamount;
+	}
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public LocalDate getInitialdate() {
 		return initialdate;
 	}
+
 	public void setInitialdate(LocalDate initialdate) {
 		this.initialdate = initialdate;
 	}
+
 	public Long getSettingsid() {
 		return settingsid;
 	}
+
 	public void setSettingsid(Long settingsid) {
 		this.settingsid = settingsid;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public Long getQty() {
-		return Qty;
-	}
-	public void setQty(Long qty) {
-		Qty = qty;
-	}
-	public Long getAmmount() {
-		return ammount;
-	}
-	public void setAmmount(Long ammount) {
-		this.ammount = ammount;
+		return qty;
 	}
 
-	public String getStockflag() {
+	public void setQty(Long qty) {
+		this.qty = qty;
+	}
+
+	public Long getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Long amount) {
+		this.amount = amount;
+	}
+
+	public Boolean getStockflag() {
 		return stockflag;
 	}
-	public void setStockflag(String stockflag) {
+
+	public void setStockflag(Boolean stockflag) {
 		this.stockflag = stockflag;
 	}
+
 	public String getPhno() {
 		return phno;
 	}
+
 	public void setPhno(String phno) {
 		this.phno = phno;
 	}
-	public LocalDate getFinalDate() {
-		return finalDate;
+
+	public LocalDate getFinaldate() {
+		return finaldate;
 	}
-	public void setFinalDate(LocalDate finalDate) {
-		this.finalDate = finalDate;
+
+	public void setFinaldate(LocalDate finaldate) {
+		this.finaldate = finaldate;
 	}
-	public Long getAmountCleared() {
-		return amountCleared;
+
+	public Long getAmountcleared() {
+		return amountcleared;
 	}
-	public void setAmountCleared(Long amountCleared) {
-		this.amountCleared = amountCleared;
+
+	public void setAmountcleared(Long amountcleared) {
+		this.amountcleared = amountcleared;
 	}
+
 	public Long getUserid() {
 		return userid;
 	}
+
 	public void setUserid(Long userid) {
 		this.userid = userid;
 	}
-	
-	public jama[] getDeposit() {
-		return deposit;
+
+	public Deposits[] getDeposits() {
+		return deposits;
 	}
-	public void setDeposit(jama[] deposit) {
-		this.deposit = deposit;
+
+	public void setDeposits(Deposits[] deposits) {
+		this.deposits = deposits;
 	}
+
+	public Boolean getDaylatest() {
+		return daylatest;
+	}
+
+	public void setDaylatest(Boolean daylatest) {
+		this.daylatest = daylatest;
+	}
+
 	@Override
 	public String toString() {
-		return "stocks [id=" + id + ", initialdate=" + initialdate + ", settingsid=" + settingsid + ", name=" + name
-				+ ", Qty=" + Qty + ", ammount=" + ammount + ", stockflag=" + stockflag + ", phno=" + phno
-				+ ", finalDate=" + finalDate + ", amountCleared=" + amountCleared + ", userid=" + userid + ", deposit="
-				+ Arrays.toString(deposit) + "]";
+		return "stocks{" +
+				"id=" + id +
+				", initialdate=" + initialdate +
+				", settingsid=" + settingsid +
+				", name='" + name + '\'' +
+				", qty=" + qty +
+				", amount=" + amount +
+				", stockflag=" + stockflag +
+				", phno='" + phno + '\'' +
+				", finaldate=" + finaldate +
+				", amountcleared=" + amountcleared +
+				", userid=" + userid +
+				", deposits=" + Arrays.toString(deposits) +
+				", daylatest=" + daylatest +
+				", leftqty=" + leftqty +
+				", leftamount=" + leftamount +
+				'}';
 	}
-	
 }

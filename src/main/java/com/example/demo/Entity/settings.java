@@ -14,39 +14,58 @@ import java.time.LocalDate;
 public class settings {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	private String property;
 	private String subproperty;
-	private int stockleft;
+	private long stockleft;
 	private long userid;
 	private LocalDate createddate;
-	public Long getId() {
+	private long stockamount;
+
+	public long getStockamount() {
+		return stockamount;
+	}
+
+	public void setStockamount(long stockamount) {
+		this.stockamount = stockamount;
+	}
+
+	public long getId() {
 		return id;
 	}
-	public void setId(Long id) {
+
+	public void setId(long id) {
 		this.id = id;
 	}
+
 	public String getProperty() {
 		return property;
 	}
+
 	public void setProperty(String property) {
 		this.property = property;
 	}
+
 	public String getSubproperty() {
 		return subproperty;
 	}
+
 	public void setSubproperty(String subproperty) {
 		this.subproperty = subproperty;
 	}
-	public int getStockleft() {
+
+	public long getStockleft() {
 		return stockleft;
 	}
-	public void setStockleft(int stockleft) {
+
+	public void setStockleft(long stockleft) {
 		this.stockleft = stockleft;
 	}
+
 	public long getUserid() {
 		return userid;
 	}
+
 	public void setUserid(long userid) {
 		this.userid = userid;
 	}
@@ -58,4 +77,5 @@ public class settings {
 	public void setCreateddate(LocalDate createddate) {
 		this.createddate = createddate;
 	}
+
 }
