@@ -28,23 +28,27 @@ public class stocks {
 	private Long userid;
 	private Deposits[] deposits;
 	private Boolean daylatest;
-	private long leftqty;
-	private long leftamount;
+	private Long leftqty;
+	private Long leftamount;
+	private Long daysales;
+	private Long daystocks;
+	private Long daysalesamount;
+	private Long daystockamount;
 
-	public long getLeftqty() {
-		return leftqty;
+	public Long getDaysalesamount() {
+		return daysalesamount;
 	}
 
-	public void setLeftqty(long leftqty) {
-		this.leftqty = leftqty;
+	public void setDaysalesamount(Long daysalesamount) {
+		this.daysalesamount = daysalesamount;
 	}
 
-	public long getLeftamount() {
-		return leftamount;
+	public Long getDaystockamount() {
+		return daystockamount;
 	}
 
-	public void setLeftamount(long leftamount) {
-		this.leftamount = leftamount;
+	public void setDaystockamount(Long daystockamount) {
+		this.daystockamount = daystockamount;
 	}
 
 	public Long getId() {
@@ -151,6 +155,38 @@ public class stocks {
 		this.daylatest = daylatest;
 	}
 
+	public Long getLeftqty() {
+		return leftqty;
+	}
+
+	public void setLeftqty(Long leftqty) {
+		this.leftqty = leftqty;
+	}
+
+	public Long getLeftamount() {
+		return leftamount;
+	}
+
+	public void setLeftamount(Long leftamount) {
+		this.leftamount = leftamount;
+	}
+
+	public Long getDaysales() {
+		return daysales;
+	}
+
+	public void setDaysales(Long daysales) {
+		this.daysales = daysales;
+	}
+
+	public Long getDaystocks() {
+		return daystocks;
+	}
+
+	public void setDaystocks(Long daystocks) {
+		this.daystocks = daystocks;
+	}
+
 	@Override
 	public String toString() {
 		return "stocks{" +
@@ -169,6 +205,10 @@ public class stocks {
 				", daylatest=" + daylatest +
 				", leftqty=" + leftqty +
 				", leftamount=" + leftamount +
+				", daysales=" + daysales +
+				", daystocks=" + daystocks +
+				", daysalesamount=" + daysalesamount +
+				", daystockamount=" + daystockamount +
 				'}';
 	}
 }

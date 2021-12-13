@@ -1,17 +1,15 @@
 package com.example.demo.Repository;
 
-import com.example.demo.Entity.settings;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Controller;
 
 import com.example.demo.Entity.stocks;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface stocksRepository extends JpaRepository<stocks,String> {
@@ -36,5 +34,8 @@ public interface stocksRepository extends JpaRepository<stocks,String> {
     @Modifying
     @Query("update stocks s set s.leftqty =:leftqty , s.leftamount =:leftamount  where s.id =:id")
     void updateQtyAmount(Long id,Long leftqty ,Long leftamount);
+
+    @Query("select sum(s.daystockamount),sum(s.daysalesamount) from stocks as s where  s.initialdate >=:startdate and initialdate < :enddate and s.daylatest =:flag and s.userid = :userid and s.settingsid =:propertyid")
+    List<Long[]> getstocksbydaterange(LocalDate startdate, LocalDate enddate, Long userid, Long propertyid, Boolean flag);
 
 }
