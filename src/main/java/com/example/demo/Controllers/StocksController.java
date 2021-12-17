@@ -57,22 +57,37 @@ public class StocksController {
 		String username = jwtUtility.getUsernameFromToken(Token);
 		userdata userdata = userdetailsRepository.findByUsername(username);
 		JSONObject demo = new JSONObject(data);
-		LocalDate date;
-		int inteval;
+		LocalDate date = LocalDate.now();
+		int inteval = 7;
 		// check for start-date
 		if(demo.has("startdate")){
-//			date  =  new SimpleDateFormat("dd/MM/yyyy").parse(demo.getString("startdate"));
-			date = LocalDate.now();
-		} else  {
-			date =LocalDate.now();
+			date = LocalDate.parse(demo.getString("startdate"));
 		}
 		// for interval
 		if(demo.has("interval")) {
 			inteval = demo.getInt("interval");
-		} else {
-			inteval = 7;
 		}
 		return stockservice.getstocksdatabyinterval(date,inteval,userdata.getId());
+	}
+	@PostMapping("gettransactions")
+	@ResponseBody
+	public stocks[] getlatesttransactions(@RequestHeader(value = "Authorization") String authorization, @RequestBody String data) {
+
+		String Token = authorization.replace("Bearer ","");
+		String username = jwtUtility.getUsernameFromToken(Token);
+		userdata userdata = userdetailsRepository.findByUsername(username);
+		JSONObject demo = new JSONObject(data);
+		LocalDate date = LocalDate.now();;
+		int inteval = 30;
+		// check for start-date
+		if(demo.has("startdate")){
+			date = LocalDate.parse(demo.getString("startdate"));
+		}
+		// for interval
+		if(demo.has("interval")) {
+			inteval = demo.getInt("interval");
+		}
+		return stockservice.getlatesttransactions(date,inteval,userdata.getId());
 	}
 
 }

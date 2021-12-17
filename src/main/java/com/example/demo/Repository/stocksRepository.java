@@ -35,7 +35,10 @@ public interface stocksRepository extends JpaRepository<stocks,String> {
     @Query("update stocks s set s.leftqty =:leftqty , s.leftamount =:leftamount  where s.id =:id")
     void updateQtyAmount(Long id,Long leftqty ,Long leftamount);
 
-    @Query("select sum(s.daystockamount),sum(s.daysalesamount) from stocks as s where  s.initialdate >=:startdate and initialdate < :enddate and s.daylatest =:flag and s.userid = :userid and s.settingsid =:propertyid")
+    @Query("select sum(s.daystockamount),sum(s.daysalesamount) from stocks as s where  s.initialdate <=:startdate and initialdate > :enddate and s.daylatest =:flag and s.userid = :userid and s.settingsid =:propertyid")
     List<Long[]> getstocksbydaterange(LocalDate startdate, LocalDate enddate, Long userid, Long propertyid, Boolean flag);
+
+    @Query("select s from stocks as s where  s.initialdate <=:startdate and initialdate > :enddate and s.userid = :userid")
+    <List> stocks[] gettransactionsbydaterange(LocalDate startdate, LocalDate enddate, Long userid);
 
 }

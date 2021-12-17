@@ -107,4 +107,12 @@ public class settingsController {
 		}
 	return result.toString();
 	}
+	@GetMapping("getSettingsall")
+	public settings[] getSettingsintableform(@RequestHeader(value = "Authorization") String authorization) {
+		String Token = authorization.replace("Bearer ", "");
+		String username = jwtUtility.getUsernameFromToken(Token);
+		userdata userdata = userdetailsRepository.findByUsername(username);
+		settings data[] = settingsRepository.findByUserid(userdata.getId());
+		return data;
+	}
 }

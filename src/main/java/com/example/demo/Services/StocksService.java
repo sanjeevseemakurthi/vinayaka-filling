@@ -2,6 +2,7 @@ package com.example.demo.Services;
 
 import com.example.demo.Entity.settings;
 import com.example.demo.Entity.stocks;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import com.example.demo.Repository.stocksRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -115,20 +117,20 @@ public class StocksService {
         List <LocalDate> startdates=new ArrayList<>();
         List <LocalDate> enddates=new ArrayList<>();
         for( int i =0;i< 10; i++) {
-            startdates.add(date.minusDays((i+1)*interval));
-            enddates.add(date.minusDays(i*interval));
+            enddates.add(date.minusDays((i+1)*interval));
+            startdates.add(date.minusDays(i*interval));
         }
         settings settingsdata[] = settingsRepository.findByUserid(userid);
         JSONObject finalresult = new JSONObject();
         List <stocks> subproperties = new ArrayList<stocks>();
         for (settings node : settingsdata ) {
-            List<Long[]> propertiesdata = new ArrayList<Long[]>();
+            JSONObject propertiesdata = new JSONObject();
             String propertyname = null;
             String subproperty = null;
             for (int i= 0;i<10;i++) {
-
                 List<Long[]> datas = stocksRepository.getstocksbydaterange(startdates.get(i), enddates.get(i), userid, node.getId(), true);
-                propertiesdata.add(datas.get(0));
+                String datecoversion = (startdates.get(i)).toString() +"-"+ (enddates.get(i)).toString();
+                propertiesdata.append(datecoversion,datas.get(0));
                 propertyname = node.getProperty();
                 subproperty = node.getSubproperty();
             }
@@ -144,5 +146,11 @@ public class StocksService {
             }
         }
         return finalresult.toString();
+    }
+
+    public  stocks[] getlatesttransactions(LocalDate date, int interval,Long userid) {
+        LocalDate enddate = date.minusDays(interval);
+        stocks stocksdata[]  = stocksRepository.gettransactionsbydaterange(date, enddate,userid);
+        return stocksdata;
     }
 }
