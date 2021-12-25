@@ -89,5 +89,16 @@ public class StocksController {
 		}
 		return stockservice.getlatesttransactions(date,inteval,userdata.getId());
 	}
+	@PostMapping("deletetransactionbyid")
+	@ResponseBody
+	public String deletetransactionbyid(@RequestHeader(value = "Authorization") String authorization, @RequestBody String data) {
+
+		String Token = authorization.replace("Bearer ","");
+		String username = jwtUtility.getUsernameFromToken(Token);
+		userdata userdata = userdetailsRepository.findByUsername(username);
+		JSONObject demo = new JSONObject(data);
+		Long transactionid = demo.getLong("id");
+		return stockservice.deletetransactionbyid(transactionid,userdata.getId());
+	}
 
 }

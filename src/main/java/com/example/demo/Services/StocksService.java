@@ -150,7 +150,57 @@ public class StocksService {
 
     public  stocks[] getlatesttransactions(LocalDate date, int interval,Long userid) {
         LocalDate enddate = date.minusDays(interval);
-        stocks stocksdata[]  = stocksRepository.gettransactionsbydaterange(date, enddate,userid);
+//        stocks stocksdata[]  = stocksRepository.gettransactionsbydaterange(date, enddate,userid);
+        stocks stocksdata[]  = stocksRepository.gettransactionslatest(userid);
         return stocksdata;
+    }
+
+    public String deletetransactionbyid(Long id,Long userid) {
+        stocks stockdata = stocksRepository.gettransactionbyid(id);
+        stocks stocksdata[]  = stocksRepository.getalltransactionafterthedate(stockdata.getInitialdate(),stockdata.getSettingsid(),stockdata.getUserid());
+        for (stocks updatedata : stocksdata) {
+            if(updatedata.getId() > stockdata.getId() || updatedata.getInitialdate().isAfter( stockdata.getInitialdate())) {
+                if(stockdata.getStockflag()) {
+                    updatedata.setLeftamount(updatedata.getLeftamount() - stockdata.getAmount());
+                    updatedata.setLeftqty(updatedata.getLeftqty() - stockdata.getQty());
+                    if(updatedata.getInitialdate().isEqual( stockdata.getInitialdate())) {
+                        updatedata.setDaystocks(updatedata.getDaystocks() - stockdata.getQty());
+                        updatedata.setDaystockamount(updatedata.getDaystockamount() - stockdata.getAmount());
+                    }
+                } else  {
+                    updatedata.setLeftamount(updatedata.getLeftamount() + stockdata.getAmount());
+                    updatedata.setLeftqty(updatedata.getLeftqty() + stockdata.getQty());
+                    if (updatedata.getInitialdate().isEqual(stockdata.getInitialdate())) {
+                        updatedata.setDaysales(updatedata.getDaysales() - stockdata.getQty());
+                        updatedata.setDaysalesamount(updatedata.getDaysalesamount() - stockdata.getAmount());
+                    }
+                }
+                stocksRepository.updateallqtydetails(updatedata.getId(),updatedata.getLeftqty(),updatedata.getLeftamount(),updatedata.getDaystocks(),updatedata.getDaystockamount(),updatedata.getDaysales(),updatedata.getDaysalesamount());
+            }
+
+        }
+        // updating settings data
+        settings dataofsettings = settingsRepository.findById(stockdata.getSettingsid());
+        if(stockdata.getStockflag()) {
+            settingsRepository.updatestocksleftamountbyid(dataofsettings.getStockleft()-stockdata.getQty(),
+                    dataofsettings.getStockamount() - stockdata.getAmount(),dataofsettings.getId());
+        } else {
+            settingsRepository.updatestocksleftamountbyid(dataofsettings.getStockleft() + stockdata.getQty(),
+                    dataofsettings.getStockamount() + stockdata.getAmount(),dataofsettings.getId());
+        }
+        // deleting transaction
+        stocksRepository.deletestockrow(stockdata.getId());
+        // updating flag of latest transaction
+        if(stockdata.getDaylatest() == true) {
+            Long previouslatestid =  stocksRepository.getpreviouslatesttransaction(stockdata.getInitialdate(),stockdata.getSettingsid(),stockdata.getUserid());
+            if(previouslatestid != null) {
+                stocksRepository.updateFlagById(previouslatestid,true);
+            }
+        }
+
+
+        JSONObject result = new JSONObject();
+        result.put("status","sucess");
+        return result.toString();
     }
 }
