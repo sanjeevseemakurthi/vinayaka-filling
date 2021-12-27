@@ -203,4 +203,53 @@ public class StocksService {
         result.put("status","sucess");
         return result.toString();
     }
+    public String edittransactionbyid(Long id, stocks stockdatafromresponse,Long userid) {
+        stocks stockdata = stocksRepository.gettransactionbyid(id);
+        if (stockdatafromresponse.getAmount() - stockdata.getAmount() != 0 || stockdatafromresponse.getQty() - stockdata.getQty() != 0) {
+            stocks stocksdata[] = stocksRepository.getalltransactionafterthedate(stockdata.getInitialdate(), stockdata.getSettingsid(), stockdata.getUserid());
+            for (stocks updatedata : stocksdata) {
+                if (updatedata.getId() >= stockdata.getId() || updatedata.getInitialdate().isAfter(stockdata.getInitialdate())) {
+                    if (stockdata.getStockflag()) {
+                        updatedata.setLeftamount(updatedata.getLeftamount() - stockdata.getAmount() + stockdatafromresponse.getAmount());
+                        updatedata.setLeftqty(updatedata.getLeftqty() - stockdata.getQty() + stockdatafromresponse.getQty());
+                        if (updatedata.getInitialdate().isEqual(stockdata.getInitialdate())) {
+                            updatedata.setDaystocks(updatedata.getDaystocks() - stockdata.getQty() + stockdatafromresponse.getQty());
+                            updatedata.setDaystockamount(updatedata.getDaystockamount() - stockdata.getAmount() + stockdatafromresponse.getAmount());
+                        }
+                    } else {
+                        updatedata.setLeftamount(updatedata.getLeftamount() + stockdata.getAmount() - stockdatafromresponse.getAmount());
+                        updatedata.setLeftqty(updatedata.getLeftqty() + stockdata.getQty() - stockdatafromresponse.getQty());
+                        if (updatedata.getInitialdate().isEqual(stockdata.getInitialdate())) {
+                            updatedata.setDaysales(updatedata.getDaysales() - stockdata.getQty() + stockdatafromresponse.getQty());
+                            updatedata.setDaysalesamount(updatedata.getDaysalesamount() - stockdata.getAmount() + stockdatafromresponse.getAmount());
+                        }
+                    }
+                    if (updatedata.getId() == stockdata.getId()) {
+                        stockdatafromresponse.setDaysalesamount(updatedata.getDaysalesamount());
+                        stockdatafromresponse.setDaystockamount(updatedata.getDaystockamount());
+                        stockdatafromresponse.setDaysales(updatedata.getDaysales());
+                        stockdatafromresponse.setDaystocks(updatedata.getDaystocks());
+                        stockdatafromresponse.setLeftamount(updatedata.getLeftamount());
+                        stockdatafromresponse.setLeftqty(updatedata.getLeftqty());
+                    } else {
+                        stocksRepository.updateallqtydetails(updatedata.getId(), updatedata.getLeftqty(), updatedata.getLeftamount(), updatedata.getDaystocks(), updatedata.getDaystockamount(), updatedata.getDaysales(), updatedata.getDaysalesamount());
+                    }
+                }
+
+            }
+            // updating settings data
+            settings dataofsettings = settingsRepository.findById(stockdata.getSettingsid());
+            if (stockdata.getStockflag()) {
+                settingsRepository.updatestocksleftamountbyid(dataofsettings.getStockleft() - stockdata.getQty() +stockdatafromresponse.getQty(),
+                        dataofsettings.getStockamount() - stockdata.getAmount()+stockdatafromresponse.getAmount(), dataofsettings.getId());
+            } else {
+                settingsRepository.updatestocksleftamountbyid(dataofsettings.getStockleft() + stockdata.getQty()-stockdatafromresponse.getQty(),
+                        dataofsettings.getStockamount() + stockdata.getAmount()-stockdatafromresponse.getAmount(), dataofsettings.getId());
+            }
+        }
+        stocksRepository.save(stockdatafromresponse);
+        JSONObject result = new JSONObject();
+        result.put("status","sucess");
+        return result.toString();
+    }
 }

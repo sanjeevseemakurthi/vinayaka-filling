@@ -101,4 +101,19 @@ public class StocksController {
 		return stockservice.deletetransactionbyid(transactionid,userdata.getId());
 	}
 
+	@PostMapping("editstocks")
+	@ResponseBody
+	public String updateStocks(@RequestHeader(value = "Authorization") String authorization, @RequestBody stocks data) {
+
+		String Token = authorization.replace("Bearer ","");
+		String username = jwtUtility.getUsernameFromToken(Token);
+		userdata userdata = userdetailsRepository.findByUsername(username);
+		data.setUserid(userdata.getId());
+
+		stockservice.edittransactionbyid(data.getId(),data,data.getUserid());
+		JSONObject result = new JSONObject();
+		result.put("status","sucess");
+		return result.toString();
+	}
+
 }
