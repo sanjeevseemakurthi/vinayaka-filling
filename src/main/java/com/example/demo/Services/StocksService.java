@@ -121,31 +121,23 @@ public class StocksService {
             startdates.add(date.minusDays(i*interval));
         }
         settings settingsdata[] = settingsRepository.findByUserid(userid);
-        JSONObject finalresult = new JSONObject();
-        List <stocks> subproperties = new ArrayList<stocks>();
+        JSONArray  subresult = new JSONArray ();
         for (settings node : settingsdata ) {
-            JSONObject propertiesdata = new JSONObject();
-            String propertyname = null;
-            String subproperty = null;
+            JSONArray  result = new JSONArray ();
+            JSONObject propertydata = new JSONObject();
+            result.put(propertydata.append("property", node.getProperty()));
+            JSONObject subpropertydata = new JSONObject();
+            result.put(subpropertydata.append("subproperty", node.getSubproperty()));
             for (int i= 0;i<10;i++) {
+                JSONObject propertiesdata = new JSONObject();
                 List<Long[]> datas = stocksRepository.getstocksbydaterange(startdates.get(i), enddates.get(i), userid, node.getId(), true);
-                String datecoversion = (startdates.get(i)).toString() +"-"+ (enddates.get(i)).toString();
+                String datecoversion = (startdates.get(i)).toString() +","+ (enddates.get(i)).toString();
                 propertiesdata.append(datecoversion,datas.get(0));
-                propertyname = node.getProperty();
-                subproperty = node.getSubproperty();
+                result.put(propertiesdata);
             }
-            JSONObject  subresult = new JSONObject ();
-            subresult.put(subproperty,propertiesdata);
-            if (finalresult.has(propertyname)) {
-                subresult = finalresult.getJSONObject(propertyname);
-                subresult.append(subproperty,propertiesdata);
-                finalresult.put(propertyname,subresult);
-            } else {
-                subresult.put(subproperty,propertiesdata);
-                finalresult.put(propertyname,subresult);
-            }
+            subresult.put(result);
         }
-        return finalresult.toString();
+        return subresult.toString();
     }
 
     public  stocks[] getlatesttransactions(LocalDate date, int interval,Long userid) {
