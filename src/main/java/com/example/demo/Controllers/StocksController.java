@@ -49,7 +49,7 @@ public class StocksController {
 		 return result.toString();
 	}
 
-	@PostMapping("getstocks")
+	@PostMapping("getstockbyamount")
 	@ResponseBody
 	public String getStocksbyday(@RequestHeader(value = "Authorization") String authorization, @RequestBody String data) {
 
@@ -68,6 +68,27 @@ public class StocksController {
 			inteval = demo.getInt("interval");
 		}
 		return stockservice.getstocksdatabyinterval(date,inteval,userdata.getId());
+	}
+
+	@PostMapping("getstockbyqty")
+	@ResponseBody
+	public String getStocksbydayaty(@RequestHeader(value = "Authorization") String authorization, @RequestBody String data) {
+
+		String Token = authorization.replace("Bearer ","");
+		String username = jwtUtility.getUsernameFromToken(Token);
+		userdata userdata = userdetailsRepository.findByUsername(username);
+		JSONObject demo = new JSONObject(data);
+		LocalDate date = LocalDate.now();
+		int inteval = 7;
+		// check for start-date
+		if(demo.has("startdate")){
+			date = LocalDate.parse(demo.getString("startdate"));
+		}
+		// for interval
+		if(demo.has("interval")) {
+			inteval = demo.getInt("interval");
+		}
+		return stockservice.getstocksdatabyintervalqty(date,inteval,userdata.getId());
 	}
 	@PostMapping("gettransactions")
 	@ResponseBody

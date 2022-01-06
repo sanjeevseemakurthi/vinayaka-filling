@@ -139,7 +139,32 @@ public class StocksService {
         }
         return subresult.toString();
     }
-
+    public String getstocksdatabyintervalqty(LocalDate date, int interval,Long userid) {
+        List <LocalDate> startdates=new ArrayList<>();
+        List <LocalDate> enddates=new ArrayList<>();
+        for( int i =0;i< 10; i++) {
+            enddates.add(date.minusDays((i+1)*interval));
+            startdates.add(date.minusDays(i*interval));
+        }
+        settings settingsdata[] = settingsRepository.findByUserid(userid);
+        JSONArray  subresult = new JSONArray ();
+        for (settings node : settingsdata ) {
+            JSONArray  result = new JSONArray ();
+            JSONObject propertydata = new JSONObject();
+            result.put(propertydata.append("property", node.getProperty()));
+            JSONObject subpropertydata = new JSONObject();
+            result.put(subpropertydata.append("subproperty", node.getSubproperty()));
+            for (int i= 0;i<10;i++) {
+                JSONObject propertiesdata = new JSONObject();
+                List<Long[]> datas = stocksRepository.getstocksbydaterangeqty(startdates.get(i), enddates.get(i), userid, node.getId(), true);
+                String datecoversion = (startdates.get(i)).toString() +","+ (enddates.get(i)).toString();
+                propertiesdata.append(datecoversion,datas.get(0));
+                result.put(propertiesdata);
+            }
+            subresult.put(result);
+        }
+        return subresult.toString();
+    }
     public  stocks[] getlatesttransactions(LocalDate date, int interval,Long userid) {
         LocalDate enddate = date.minusDays(interval);
 //        stocks stocksdata[]  = stocksRepository.gettransactionsbydaterange(date, enddate,userid);
