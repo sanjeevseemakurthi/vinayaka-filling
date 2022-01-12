@@ -2,6 +2,7 @@ package com.example.demo.Entity;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -211,4 +212,22 @@ public class stocks {
 				", daystockamount=" + daystockamount +
 				'}';
 	}
+	public static Comparator<stocks> settingsidcomparator = new Comparator<stocks>() {
+		public int compare(stocks s1, stocks s2)
+		{
+			Long firstid = s1.getSettingsid();
+			Long secondid = s2.getSettingsid();
+
+			return  firstid.compareTo(secondid);
+		}
+	};
+	public static Comparator<stocks> initldatecomparitator = new Comparator<stocks>() {
+		public int compare(stocks s1, stocks s2)
+		{
+			LocalDate firstid = s1.getInitialdate();
+			LocalDate secondid = s2.getInitialdate();
+
+			return  firstid.compareTo(secondid);
+		}
+	};
 }

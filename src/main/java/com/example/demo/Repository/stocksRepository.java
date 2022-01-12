@@ -21,7 +21,8 @@ public interface stocksRepository extends JpaRepository<stocks,String> {
     stocks getlatestday(LocalDate dateTime, Long userid, Long propertyid,Boolean flag);
 
     @Query("select s from stocks s where s.initialdate = " +
-            "(select max(m.initialdate) from stocks as m where m.initialdate<=:dateTime)" +
+            "(select max(m.initialdate) from stocks as m where m.initialdate<=:dateTime and " +
+            "m.daylatest =:flag and m.userid = :userid and m.settingsid =:propertyid  )" +
             " and s.daylatest =:flag and s.userid = :userid and s.settingsid =:propertyid")
     stocks getlatestdayorprevious(LocalDate dateTime, Long userid, Long propertyid,Boolean flag);
 

@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 
 @Controller
 @Entity
@@ -78,4 +79,16 @@ public class settings {
 		this.createddate = createddate;
 	}
 
+	@Override
+	public String toString() {
+		return "settings{" +
+				"id=" + id +
+				", property='" + property + '\'' +
+				", subproperty='" + subproperty + '\'' +
+				", stockleft=" + stockleft +
+				", userid=" + userid +
+				", createddate=" + createddate +
+				", stockamount=" + stockamount +
+				'}';
+	}
 }

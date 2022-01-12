@@ -5,6 +5,7 @@ import com.example.demo.Entity.stocks;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import  com.example.demo.Repository.settingsRepository;
 import com.example.demo.Repository.stocksRepository;
@@ -22,7 +23,8 @@ public class StocksService {
     @Autowired
     public stocksRepository stocksRepository;
 
-    public void addedinpreviousdate(stocks data ) {
+
+    public Long addedinpreviousdate(stocks data ) {
 
         // this is for looping grater data and changing quantity and stockamount
         stocks[] stocks = stocksRepository.findgraterthangivendate(data.getInitialdate(),data.getUserid(),data.getSettingsid());
@@ -41,19 +43,22 @@ public class StocksService {
         }
 
         // this is for updating stock data in settings
-        settings settings = settingsRepository.findById(data.getSettingsid());
-        long settingsstockdata;
-        long settingsstockamount;
-        if(flag){
-            settingsstockdata = settings.getStockleft()+data.getQty();
-            settingsstockamount = settings.getStockamount() + data.getAmount();
+        settings settingsupdate = settingsRepository.findById(data.getSettingsid());
+        long settingsstockdata = data.getQty();
+        long settingsstockamount = data.getAmount();
+        System.out.println(settingsupdate.toString());
+        if(settingsupdate != null){
+            if(flag){
+                settingsstockdata = settingsupdate.getStockleft()+data.getQty();
+                settingsstockamount = settingsupdate.getStockamount() + data.getAmount();
 
-        } else {
-            settingsstockdata = settings.getStockleft()-data.getQty();
-            settingsstockamount = settings.getStockamount() - data.getAmount();
+            } else {
+                settingsstockdata = settingsupdate.getStockleft()-data.getQty();
+                settingsstockamount = settingsupdate.getStockamount() - data.getAmount();
 
+            }
         }
-        settingsRepository.updatestocksleftamountbyid(settingsstockdata,settingsstockamount,settings.getId());
+        settingsRepository.updatestocksleftamountbyid(settingsstockdata,settingsstockamount,settingsupdate.getId());
 
         // this is for updating current record status
         long caluclatestockdata;
@@ -112,6 +117,7 @@ public class StocksService {
         data.setLeftqty(caluclatestockdata);
         data.setLeftamount(caluclatestockamount);
         stocksRepository.save(data);
+        return Long.valueOf(1);
     }
     public String getstocksdatabyinterval(LocalDate date, int interval,Long userid) {
         List <LocalDate> startdates=new ArrayList<>();
