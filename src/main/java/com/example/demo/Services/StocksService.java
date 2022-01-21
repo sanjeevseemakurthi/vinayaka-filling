@@ -119,10 +119,10 @@ public class StocksService {
         stocksRepository.save(data);
         return Long.valueOf(1);
     }
-    public String getstocksdatabyinterval(LocalDate date, int interval,Long userid) {
+    public String getstocksdatabyinterval(LocalDate date, int interval,int intevalnumber,Long userid) {
         List <LocalDate> startdates=new ArrayList<>();
         List <LocalDate> enddates=new ArrayList<>();
-        for( int i =0;i< 10; i++) {
+        for( int i =0;i< intevalnumber; i++) {
             enddates.add(date.minusDays((i+1)*interval));
             startdates.add(date.minusDays(i*interval));
         }
@@ -134,7 +134,7 @@ public class StocksService {
             result.put(propertydata.append("property", node.getProperty()));
             JSONObject subpropertydata = new JSONObject();
             result.put(subpropertydata.append("subproperty", node.getSubproperty()));
-            for (int i= 0;i<10;i++) {
+            for (int i= 0;i<intevalnumber;i++) {
                 JSONObject propertiesdata = new JSONObject();
                 List<Long[]> datas = stocksRepository.getstocksbydaterange(startdates.get(i), enddates.get(i), userid, node.getId(), true);
                 String datecoversion = (startdates.get(i)).toString() +","+ (enddates.get(i)).toString();
@@ -145,10 +145,10 @@ public class StocksService {
         }
         return subresult.toString();
     }
-    public String getstocksdatabyintervalqty(LocalDate date, int interval,Long userid) {
+    public String getstocksdatabyintervalqty(LocalDate date, int interval,int intevalnumber,Long userid) {
         List <LocalDate> startdates=new ArrayList<>();
         List <LocalDate> enddates=new ArrayList<>();
-        for( int i =0;i< 10; i++) {
+        for( int i =0;i< intevalnumber; i++) {
             enddates.add(date.minusDays((i+1)*interval));
             startdates.add(date.minusDays(i*interval));
         }
@@ -160,7 +160,7 @@ public class StocksService {
             result.put(propertydata.append("property", node.getProperty()));
             JSONObject subpropertydata = new JSONObject();
             result.put(subpropertydata.append("subproperty", node.getSubproperty()));
-            for (int i= 0;i<10;i++) {
+            for (int i= 0;i<intevalnumber;i++) {
                 JSONObject propertiesdata = new JSONObject();
                 List<Long[]> datas = stocksRepository.getstocksbydaterangeqty(startdates.get(i), enddates.get(i), userid, node.getId(), true);
                 String datecoversion = (startdates.get(i)).toString() +","+ (enddates.get(i)).toString();

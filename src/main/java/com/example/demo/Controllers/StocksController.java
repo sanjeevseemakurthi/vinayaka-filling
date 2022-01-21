@@ -70,6 +70,7 @@ public class StocksController {
 		JSONObject demo = new JSONObject(data);
 		LocalDate date = LocalDate.now();
 		int inteval = 7;
+		int intevalnumber = 10;
 		// check for start-date
 		if(demo.has("startdate")){
 			date = LocalDate.parse(demo.getString("startdate"));
@@ -78,7 +79,10 @@ public class StocksController {
 		if(demo.has("interval")) {
 			inteval = demo.getInt("interval");
 		}
-		return stockservice.getstocksdatabyinterval(date,inteval,userdata.getId());
+		if(demo.has("intevalnumber")) {
+			intevalnumber = demo.getInt("intevalnumber");
+		}
+		return stockservice.getstocksdatabyinterval(date,inteval,intevalnumber,userdata.getId());
 	}
 
 	@PostMapping("getstockbyqty")
@@ -91,6 +95,7 @@ public class StocksController {
 		JSONObject demo = new JSONObject(data);
 		LocalDate date = LocalDate.now();
 		int inteval = 7;
+		int intevalnumber = 10;
 		// check for start-date
 		if(demo.has("startdate")){
 			date = LocalDate.parse(demo.getString("startdate"));
@@ -99,7 +104,10 @@ public class StocksController {
 		if(demo.has("interval")) {
 			inteval = demo.getInt("interval");
 		}
-		return stockservice.getstocksdatabyintervalqty(date,inteval,userdata.getId());
+		if(demo.has("intevalnumber")) {
+			intevalnumber = demo.getInt("intevalnumber");
+		}
+		return stockservice.getstocksdatabyintervalqty(date,inteval,intevalnumber,userdata.getId());
 	}
 	@PostMapping("gettransactions")
 	@ResponseBody
