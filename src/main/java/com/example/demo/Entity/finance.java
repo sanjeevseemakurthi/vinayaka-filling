@@ -2,10 +2,7 @@ package com.example.demo.Entity;
 
 import org.springframework.stereotype.Controller;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -20,7 +17,10 @@ public class finance {
     private String item;
     private long Qty;
     private LocalDate date;
-    private Deposits[] deposits;
+    @Column(length = 3000)
+    private Deposits deposits[];
+    @Column(length = 3000)
+    private Deposits giveextra[];
     private long sno;
     private long uid;
     private boolean isactive;
@@ -115,9 +115,19 @@ public class finance {
                 ", Qty=" + Qty +
                 ", date=" + date +
                 ", deposits=" + Arrays.toString(deposits) +
+                ", giveextra=" + Arrays.toString(giveextra) +
                 ", sno=" + sno +
                 ", uid=" + uid +
                 ", isactive=" + isactive +
                 '}';
     }
+
+    public Deposits[] getGiveextra() {
+        return giveextra;
+    }
+
+    public void setGiveextra(Deposits[] giveextra) {
+        this.giveextra = giveextra;
+    }
+
 }

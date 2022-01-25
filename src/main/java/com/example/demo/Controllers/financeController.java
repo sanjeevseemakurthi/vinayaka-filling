@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 
 import com.example.demo.Entity.finance;
 import com.example.demo.Entity.people;
+import com.example.demo.Entity.Deposits;
 import com.example.demo.jwtauth.JWTUtility;
 import com.example.demo.jwtauth.userdata;
 import com.example.demo.requestresponsejsons.addnewpersonfin;
@@ -33,7 +34,10 @@ public class financeController {
         userdata userdata = userdetailsRepository.findByUsername(username);
         data.setUid(userdata.getId());
         financeRepository.save(data);
-        return "Sucess";
+
+        JSONObject result = new JSONObject();
+        result.put("reesult","sucess");
+        return result.toString();
     }
     @PostMapping("addnewpersonfin")
     public String addnewpersonfin(@RequestHeader(value = "Authorization") String authorization, @RequestBody addnewpersonfin data) {
@@ -45,8 +49,12 @@ public class financeController {
         finance financedata =data.getFinancedata();
         peopledata.setUid(userdata.getId());
         financedata.setUid(userdata.getId());
-        peopleRepository.save(peopledata);
-        financedata.setPid(peopleRepository.getLatest());
+        people aftersave = peopleRepository.save(peopledata);
+
+        while (aftersave == null) {
+
+        }
+        financedata.setPid(aftersave.getId());
         financeRepository.save(financedata);
         return "Sucess";
     }

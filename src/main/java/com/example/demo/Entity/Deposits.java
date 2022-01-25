@@ -1,7 +1,11 @@
 package com.example.demo.Entity;
+import org.springframework.stereotype.Controller;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Deposits {
+@Controller
+public class Deposits implements Serializable {
     private Long amount;
     private LocalDate date;
 
