@@ -1,6 +1,6 @@
 package com.example.demo.Controllers;
 
-import com.example.demo.Entity.daybook;
+import com.example.demo.Entity.daysheet;
 import com.example.demo.jwtauth.JWTUtility;
 import com.example.demo.jwtauth.userdata;
 import org.json.JSONObject;
@@ -20,16 +20,16 @@ public class expensesController {
     @Autowired
     public com.example.demo.jwtauth.userdetailsRepository userdetailsRepository;
     @Autowired
-    public com.example.demo.Repository.daybookrepository daybookrepository ;
+    public com.example.demo.Repository.daysheetRepository daysheetRepository;
 
     @PostMapping("addexpense")
-    public String addexpense(@RequestHeader(value = "Authorization") String authorization, @RequestBody daybook data) {
+    public String addexpense(@RequestHeader(value = "Authorization") String authorization, @RequestBody daysheet data) {
 
         String Token = authorization.replace("Bearer ","");
         String username = jwtUtility.getUsernameFromToken(Token);
         userdata userdata = userdetailsRepository.findByUsername(username);
         data.setUid(userdata.getId());
-        daybookrepository.save(data);
+        daysheetRepository.save(data);
 
         JSONObject result = new JSONObject();
         result.put("reesult","sucess");
@@ -47,7 +47,7 @@ public class expensesController {
             date =   LocalDate.parse(demo.getString("date"));
         }
         JSONObject result = new JSONObject();
-        daybook[] datafromquery = daybookrepository.getdatabydate(date,userdata.getId());
+        daysheet[] datafromquery = daysheetRepository.getdatabydate(date,userdata.getId());
         result.put("expenses",datafromquery);
         return result.toString();
     }

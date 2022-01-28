@@ -1,21 +1,17 @@
 package com.example.demo.Entity;
 
-import org.json.JSONArray;
-import org.springframework.stereotype.Controller;
-
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.List;
 
-
-@Controller
 @Entity
-public class daybook {
+public class daysheet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(length = 3000)
-    private expenses daydata[];
+    @OneToMany(targetEntity = dailyexpenses.class,cascade = CascadeType.ALL)
+    @JoinColumn(name = "joinid",referencedColumnName = "id")
+    private List<dailyexpenses> dailyexpenses;
     private LocalDate date;
     private long uid;
 
@@ -27,12 +23,12 @@ public class daybook {
         this.id = id;
     }
 
-    public expenses[] getDaydata() {
-        return daydata;
+    public List<com.example.demo.Entity.dailyexpenses> getDailyexpenses() {
+        return dailyexpenses;
     }
 
-    public void setDaydata(expenses[] daydata) {
-        this.daydata = daydata;
+    public void setDailyexpenses(List<com.example.demo.Entity.dailyexpenses> dailyexpenses) {
+        this.dailyexpenses = dailyexpenses;
     }
 
     public LocalDate getDate() {
@@ -53,9 +49,9 @@ public class daybook {
 
     @Override
     public String toString() {
-        return "daybook{" +
+        return "daysheet{" +
                 "id=" + id +
-                ", daydata=" + Arrays.toString(daydata) +
+                ", dailyexpenses=" + dailyexpenses +
                 ", date=" + date +
                 ", uid=" + uid +
                 '}';

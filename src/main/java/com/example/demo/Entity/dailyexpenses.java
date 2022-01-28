@@ -2,15 +2,44 @@ package com.example.demo.Entity;
 
 import org.springframework.stereotype.Controller;
 
-import java.io.Serializable;
+import javax.persistence.*;
 
 @Controller
-public class expenses implements Serializable {
+@Entity
+public class dailyexpenses {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private long tid;
     private String discription;
     private String type;
-    private long typeid;
     private long deposit;
     private long withdraw;
+    private long uid;
+
+    public long getUid() {
+        return uid;
+    }
+
+    public void setUid(long uid) {
+        this.uid = uid;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getTid() {
+        return tid;
+    }
+
+    public void setTid(long tid) {
+        this.tid = tid;
+    }
 
     public String getDiscription() {
         return discription;
@@ -28,14 +57,6 @@ public class expenses implements Serializable {
         this.type = type;
     }
 
-    public long getTypeid() {
-        return typeid;
-    }
-
-    public void setTypeid(long typeid) {
-        this.typeid = typeid;
-    }
-
     public long getDeposit() {
         return deposit;
     }
@@ -51,15 +72,16 @@ public class expenses implements Serializable {
     public void setWithdraw(long withdraw) {
         this.withdraw = withdraw;
     }
-
     @Override
     public String toString() {
-        return "expenses{" +
-                "discription='" + discription + '\'' +
+        return "dailyexpenses{" +
+                "id=" + id +
+                ", tid=" + tid +
+                ", discription='" + discription + '\'' +
                 ", type='" + type + '\'' +
-                ", typeid=" + typeid +
                 ", deposit=" + deposit +
                 ", withdraw=" + withdraw +
+                ", uid=" + uid +
                 '}';
     }
 }
