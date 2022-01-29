@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import com.example.demo.Entity.finance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface stocksRepository extends JpaRepository<stocks,String> {
+public interface stocksRepository extends JpaRepository<stocks,Long> {
 
     @Query("select s from stocks s where s.initialdate > :dateTime and s.userid = :userid and s.settingsid =:propertyid")
     <List> stocks[] findgraterthangivendate(LocalDate dateTime, Long userid, Long propertyid);
@@ -66,4 +67,5 @@ public interface stocksRepository extends JpaRepository<stocks,String> {
     @Modifying
     @Query("delete from  stocks as s where s.id=:id")
     void deletestockrow(Long id);
+    stocks[] findByPid(long pid);
 }

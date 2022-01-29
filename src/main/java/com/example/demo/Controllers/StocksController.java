@@ -1,4 +1,5 @@
 package com.example.demo.Controllers;
+import com.example.demo.Entity.people;
 import com.example.demo.Entity.settings;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,8 @@ public class StocksController {
 	@Autowired
 	public filexltojsonconversion filexltojsonconversion;
 
+	@Autowired
+	public com.example.demo.Repository.peopleRepository peopleRepository;
 
 	@PostMapping("addstocks")
 	@ResponseBody
@@ -229,6 +232,17 @@ public class StocksController {
 
 		JSONObject result = new JSONObject();
 		result.put("status","sucess");
+		return result.toString();
+	}
+
+	@PostMapping("getpersonstocks")
+	public String getpersonstocks(@RequestHeader(value = "Authorization") String authorization, @RequestBody String data) {
+		JSONObject demo = new JSONObject(data);
+		long personid = demo.getLong("pid");
+		JSONObject result =new JSONObject();
+		people person[] = peopleRepository.serchbyid(personid);
+		result.put("person",person);
+		result.put("stocks",stocksRepository.findByPid(demo.getLong("pid")));
 		return result.toString();
 	}
 	@GetMapping("/download")
