@@ -192,7 +192,6 @@ public class StocksController {
 					stocks row = new stocks();
 					String[] coldata  = s.split(",");
 					row.setSettingsid(keyvaluesettings.get(coldata[0].toLowerCase(Locale.ROOT)+'-'+coldata[1].toLowerCase(Locale.ROOT)));
-					row.setName(coldata[2]);
 					row.setQty( Long.parseLong(coldata[3]));
 					row.setAmount(Long.parseLong(coldata[4]));
 					row.setPhno(coldata[5]);

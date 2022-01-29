@@ -19,15 +19,12 @@ public class stocks {
 	private Long id;
 	private LocalDate initialdate;
 	private Long settingsid;
-	private String name;
 	private Long qty;
 	private Long amount;
 	private Boolean stockflag;
 	private String phno;
 	private LocalDate finaldate;
-	private Long amountcleared;
 	private Long userid;
-	private Deposits[] deposits;
 	private Boolean daylatest;
 	private Long leftqty;
 	private Long leftamount;
@@ -35,6 +32,7 @@ public class stocks {
 	private Long daystocks;
 	private Long daysalesamount;
 	private Long daystockamount;
+	private Long pid;
 
 	public Long getDaysalesamount() {
 		return daysalesamount;
@@ -74,14 +72,6 @@ public class stocks {
 
 	public void setSettingsid(Long settingsid) {
 		this.settingsid = settingsid;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public Long getQty() {
@@ -124,13 +114,6 @@ public class stocks {
 		this.finaldate = finaldate;
 	}
 
-	public Long getAmountcleared() {
-		return amountcleared;
-	}
-
-	public void setAmountcleared(Long amountcleared) {
-		this.amountcleared = amountcleared;
-	}
 
 	public Long getUserid() {
 		return userid;
@@ -140,13 +123,6 @@ public class stocks {
 		this.userid = userid;
 	}
 
-	public Deposits[] getDeposits() {
-		return deposits;
-	}
-
-	public void setDeposits(Deposits[] deposits) {
-		this.deposits = deposits;
-	}
 
 	public Boolean getDaylatest() {
 		return daylatest;
@@ -188,21 +164,26 @@ public class stocks {
 		this.daystocks = daystocks;
 	}
 
+	public Long getPid() {
+		return pid;
+	}
+
+	public void setPid(Long pid) {
+		this.pid = pid;
+	}
+
 	@Override
 	public String toString() {
 		return "stocks{" +
 				"id=" + id +
 				", initialdate=" + initialdate +
 				", settingsid=" + settingsid +
-				", name='" + name + '\'' +
 				", qty=" + qty +
 				", amount=" + amount +
 				", stockflag=" + stockflag +
 				", phno='" + phno + '\'' +
 				", finaldate=" + finaldate +
-				", amountcleared=" + amountcleared +
 				", userid=" + userid +
-				", deposits=" + Arrays.toString(deposits) +
 				", daylatest=" + daylatest +
 				", leftqty=" + leftqty +
 				", leftamount=" + leftamount +
@@ -210,8 +191,10 @@ public class stocks {
 				", daystocks=" + daystocks +
 				", daysalesamount=" + daysalesamount +
 				", daystockamount=" + daystockamount +
+				", pid=" + pid +
 				'}';
 	}
+
 	public static Comparator<stocks> settingsidcomparator = new Comparator<stocks>() {
 		public int compare(stocks s1, stocks s2)
 		{
