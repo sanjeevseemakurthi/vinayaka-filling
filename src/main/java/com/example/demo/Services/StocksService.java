@@ -46,7 +46,6 @@ public class StocksService {
         settings settingsupdate = settingsRepository.findById(data.getSettingsid());
         long settingsstockdata = data.getQty();
         long settingsstockamount = data.getAmount();
-        System.out.println(settingsupdate.toString());
         if(settingsupdate != null){
             if(flag){
                 settingsstockdata = settingsupdate.getStockleft()+data.getQty();
@@ -116,8 +115,8 @@ public class StocksService {
         data.setDaylatest(true);
         data.setLeftqty(caluclatestockdata);
         data.setLeftamount(caluclatestockamount);
-        stocksRepository.save(data);
-        return Long.valueOf(1);
+        stocks aftersave = stocksRepository.save(data);
+        return aftersave.getId();
     }
     public String getstocksdatabyinterval(LocalDate date, int interval,int intevalnumber,Long userid) {
         List <LocalDate> startdates=new ArrayList<>();

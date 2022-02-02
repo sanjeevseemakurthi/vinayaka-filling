@@ -57,9 +57,9 @@ public class StocksController {
 		 String username = jwtUtility.getUsernameFromToken(Token);
 		 userdata userdata = userdetailsRepository.findByUsername(username);
 		 data.setUserid(userdata.getId());
-		 stockservice.addedinpreviousdate(data);
+		 Long id = stockservice.addedinpreviousdate(data);
 		 JSONObject result = new JSONObject();
-		 result.put("status","sucess");
+		 result.put("id",id);
 		 return result.toString();
 	}
 
