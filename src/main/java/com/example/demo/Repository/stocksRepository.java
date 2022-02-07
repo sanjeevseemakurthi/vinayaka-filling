@@ -67,5 +67,6 @@ public interface stocksRepository extends JpaRepository<stocks,Long> {
     @Modifying
     @Query("delete from  stocks as s where s.id=:id")
     void deletestockrow(Long id);
+
     stocks[] findByPid(long pid);
 }

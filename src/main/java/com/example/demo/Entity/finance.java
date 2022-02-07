@@ -24,6 +24,7 @@ public class finance {
     private long sno;
     private long uid;
     private boolean isactive;
+    private boolean fromperson;
 
     public long getId() {
         return id;
@@ -119,6 +120,7 @@ public class finance {
                 ", sno=" + sno +
                 ", uid=" + uid +
                 ", isactive=" + isactive +
+                ", fromperson=" + fromperson +
                 '}';
     }
 
@@ -130,4 +132,11 @@ public class finance {
         this.giveextra = giveextra;
     }
 
+    public boolean isFromperson() {
+        return fromperson;
+    }
+
+    public void setFromperson(boolean fromperson) {
+        this.fromperson = fromperson;
+    }
 }

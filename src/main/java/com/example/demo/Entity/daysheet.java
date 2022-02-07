@@ -14,6 +14,26 @@ public class daysheet {
     private List<dailyexpenses> dailyexpenses;
     private LocalDate date;
     private long uid;
+    private long closingbalance;
+
+    @Override
+    public String toString() {
+        return "daysheet{" +
+                "id=" + id +
+                ", dailyexpenses=" + dailyexpenses +
+                ", date=" + date +
+                ", uid=" + uid +
+                ", closingbalance=" + closingbalance +
+                '}';
+    }
+
+    public long getClosingbalance() {
+        return closingbalance;
+    }
+
+    public void setClosingbalance(long closingbalance) {
+        this.closingbalance = closingbalance;
+    }
 
     public long getId() {
         return id;
@@ -47,13 +67,4 @@ public class daysheet {
         this.uid = uid;
     }
 
-    @Override
-    public String toString() {
-        return "daysheet{" +
-                "id=" + id +
-                ", dailyexpenses=" + dailyexpenses +
-                ", date=" + date +
-                ", uid=" + uid +
-                '}';
-    }
 }

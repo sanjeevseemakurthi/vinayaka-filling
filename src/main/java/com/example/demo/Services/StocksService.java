@@ -1,7 +1,10 @@
 package com.example.demo.Services;
 
+import com.example.demo.Entity.dailyexpenses;
+import com.example.demo.Entity.daysheet;
 import com.example.demo.Entity.settings;
 import com.example.demo.Entity.stocks;
+import com.example.demo.Repository.daysheetRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import  com.example.demo.Repository.settingsRepository;
 import com.example.demo.Repository.stocksRepository;
+import com.example.demo.Repository.dailyexpensesRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ public class StocksService {
     @Autowired
     public stocksRepository stocksRepository;
 
+    @Autowired
+    public  expensesservice expensesservice;
 
     public Long addedinpreviousdate(stocks data ) {
 
@@ -116,6 +122,7 @@ public class StocksService {
         data.setLeftqty(caluclatestockdata);
         data.setLeftamount(caluclatestockamount);
         stocks aftersave = stocksRepository.save(data);
+        expensesservice.addexpensesfromstocks(aftersave);
         return aftersave.getId();
     }
     public String getstocksdatabyinterval(LocalDate date, int interval,int intevalnumber,Long userid) {
@@ -211,7 +218,9 @@ public class StocksService {
                     dataofsettings.getStockamount() + stockdata.getAmount(),dataofsettings.getId());
         }
         // deleting transaction
+        expensesservice.deleteexpensesfromstocks(stockdata);
         stocksRepository.deletestockrow(stockdata.getId());
+
         // updating flag of latest transaction
         if(stockdata.getDaylatest() == true) {
             Long previouslatestid =  stocksRepository.getpreviouslatesttransaction(stockdata.getInitialdate(),stockdata.getSettingsid(),stockdata.getUserid());
@@ -269,7 +278,8 @@ public class StocksService {
                         dataofsettings.getStockamount() + stockdata.getAmount()-stockdatafromresponse.getAmount(), dataofsettings.getId());
             }
         }
-        stocksRepository.save(stockdatafromresponse);
+        stocks aftersave = stocksRepository.save(stockdatafromresponse);
+        expensesservice.editexpensesfromstocks(aftersave);
         JSONObject result = new JSONObject();
         result.put("status","sucess");
         return result.toString();

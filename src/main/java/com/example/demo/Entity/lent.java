@@ -26,23 +26,14 @@ public class lent {
     private long uid;
     private boolean isactive;
     private long sid;
+    private boolean fromperson;
 
-    @Override
-    public String toString() {
-        return "lent{" +
-                "id=" + id +
-                ", pid=" + pid +
-                ", amount=" + amount +
-                ", item='" + item + '\'' +
-                ", Qty=" + Qty +
-                ", date=" + date +
-                ", deposits=" + Arrays.toString(deposits) +
-                ", giveextra=" + Arrays.toString(giveextra) +
-                ", sno=" + sno +
-                ", uid=" + uid +
-                ", isactive=" + isactive +
-                ", sid=" + sid +
-                '}';
+    public boolean isFromperson() {
+        return fromperson;
+    }
+
+    public void setFromperson(boolean fromperson) {
+        this.fromperson = fromperson;
     }
 
     public long getSid() {
@@ -141,4 +132,22 @@ public class lent {
         this.isactive = isactive;
     }
 
+    @Override
+    public String toString() {
+        return "lent{" +
+                "id=" + id +
+                ", pid=" + pid +
+                ", amount=" + amount +
+                ", item='" + item + '\'' +
+                ", Qty=" + Qty +
+                ", date=" + date +
+                ", deposits=" + Arrays.toString(deposits) +
+                ", giveextra=" + Arrays.toString(giveextra) +
+                ", sno=" + sno +
+                ", uid=" + uid +
+                ", isactive=" + isactive +
+                ", sid=" + sid +
+                ", fromperson=" + fromperson +
+                '}';
+    }
 }

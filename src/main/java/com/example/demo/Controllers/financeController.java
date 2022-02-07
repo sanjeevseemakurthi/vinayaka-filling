@@ -4,6 +4,7 @@ package com.example.demo.Controllers;
 import com.example.demo.Entity.finance;
 import com.example.demo.Entity.people;
 import com.example.demo.Entity.Deposits;
+import com.example.demo.Services.expensesservice;
 import com.example.demo.jwtauth.JWTUtility;
 import com.example.demo.jwtauth.userdata;
 import com.example.demo.requestresponsejsons.addnewpersonfin;
@@ -26,6 +27,9 @@ public class financeController {
     @Autowired
     public com.example.demo.Repository.peopleRepository peopleRepository;
 
+    @Autowired
+    public  expensesservice expensesservice;
+
     @PostMapping("addfintoexistingpeople")
     public String addfintoexistingpeople(@RequestHeader(value = "Authorization") String authorization, @RequestBody finance data) {
 
@@ -33,8 +37,8 @@ public class financeController {
         String username = jwtUtility.getUsernameFromToken(Token);
         userdata userdata = userdetailsRepository.findByUsername(username);
         data.setUid(userdata.getId());
-        financeRepository.save(data);
-
+        finance aftersave = financeRepository.save(data);
+        expensesservice.editorsavefromfinance(aftersave);
         JSONObject result = new JSONObject();
         result.put("reesult","sucess");
         return result.toString();
@@ -55,7 +59,8 @@ public class financeController {
 
         }
         financedata.setPid(aftersave.getId());
-        financeRepository.save(financedata);
+        finance test = financeRepository.save(financedata);
+        expensesservice.editorsavefromfinance(test);
         return "Sucess";
     }
 
@@ -79,8 +84,8 @@ public class financeController {
         return result.toString();
     }
     @PostMapping("updatepersondetials")
-    public String updatepersondetials(@RequestHeader(value = "Authorization") String authorization, @RequestBody people data) {
-        peopleRepository.save(data);
-        return "{result:'sucess'}";
+    public people updatepersondetials(@RequestHeader(value = "Authorization") String authorization, @RequestBody people data) {
+        people aftersave = peopleRepository.save(data);
+        return aftersave;
     }
 }

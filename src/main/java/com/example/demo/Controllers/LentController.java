@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import com.example.demo.Entity.finance;
 import com.example.demo.Entity.lent;
 import com.example.demo.Entity.people;
+import com.example.demo.Services.expensesservice;
 import com.example.demo.jwtauth.JWTUtility;
 import com.example.demo.jwtauth.userdata;
 import com.example.demo.requestresponsejsons.addnewpersonfin;
@@ -26,6 +27,10 @@ public class LentController {
 
     @Autowired
     public com.example.demo.Repository.peopleRepository peopleRepository;
+
+    @Autowired
+    public  expensesservice expensesservice;
+
     @PostMapping("addlenttoexistingpeople")
     public String addlenttoexistingpeople(@RequestHeader(value = "Authorization") String authorization, @RequestBody lent data) {
 
@@ -33,8 +38,8 @@ public class LentController {
         String username = jwtUtility.getUsernameFromToken(Token);
         userdata userdata = userdetailsRepository.findByUsername(username);
         data.setUid(userdata.getId());
-        lentRepository.save(data);
-
+        lent aftersave = lentRepository.save(data);
+        expensesservice.editorsavefromlent(aftersave);
         JSONObject result = new JSONObject();
         result.put("reesult","sucess");
         return result.toString();
@@ -49,13 +54,14 @@ public class LentController {
         lent lentdata = data.getLentdata();
         peopledata.setUid(userdata.getId());
         lentdata.setUid(userdata.getId());
-        people aftersave = peopleRepository.save(peopledata);
+        people aftersavepeople = peopleRepository.save(peopledata);
 
-        while (aftersave == null) {
+        while (aftersavepeople == null) {
 
         }
-        lentdata.setPid(aftersave.getId());
-        lentRepository.save(lentdata);
+        lentdata.setPid(aftersavepeople.getId());
+        lent aftersave = lentRepository.save(lentdata);
+        expensesservice.editorsavefromlent(aftersave);
         return "Sucess";
     }
 
