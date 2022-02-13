@@ -99,7 +99,7 @@ public class expensesservice {
         expensedata.setUid(uid);
         expensedata.setTid(tid);
         expensedata.setType(Type);
-        if(Type == "Finance-Deposit" || Type == "Lent-Deposit" ) {
+        if(Type.equals("Finance-Deposit") || Type.equals("Lent-Deposit")) {
             if(fromperson){
                 expensedata.setWithdraw(amount);
                 expensedata.setDiscription("Your"+Type + " for "+item);
