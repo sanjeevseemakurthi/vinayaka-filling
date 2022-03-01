@@ -83,9 +83,4 @@ public class financeController {
         result.put("persons",peopleRepository.findByUid(userdata.getId()));
         return result.toString();
     }
-    @PostMapping("updatepersondetials")
-    public people updatepersondetials(@RequestHeader(value = "Authorization") String authorization, @RequestBody people data) {
-        people aftersave = peopleRepository.save(data);
-        return aftersave;
-    }
 }

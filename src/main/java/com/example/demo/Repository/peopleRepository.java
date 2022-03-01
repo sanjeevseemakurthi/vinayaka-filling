@@ -10,4 +10,5 @@ public interface peopleRepository extends JpaRepository<people,Long> {
     people[] findByUid(long pid);
     @Query("select p from people p where p.id =:id")
     people[] serchbyid(long id);
+
 }

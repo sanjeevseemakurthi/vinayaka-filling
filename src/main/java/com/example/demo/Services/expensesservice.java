@@ -39,7 +39,7 @@ public class expensesservice {
         }
 
         // for existing data
-        List<daysheet> daydata =  daysheetRepository.findByDate(aftersave.getInitialdate());
+        List<daysheet> daydata =  daysheetRepository.findByDateAndUid(aftersave.getInitialdate(),aftersave.getUserid());
         if(daydata.size() == 0) {
             daysheet daysheetdata = new daysheet();
             daysheetdata.setUid(aftersave.getUserid());
@@ -56,7 +56,7 @@ public class expensesservice {
         daysheetRepository.save(daydata.get(0));
     }
     public void editexpensesfromstocks(stocks aftersave ) {
-        List<dailyexpenses> data = dailyexpensesRepository.findByTidAndType(aftersave.getId(),"Stocks");
+        List<dailyexpenses> data = dailyexpensesRepository.findByTidAndTypeAndUid(aftersave.getId(),"Stocks", aftersave.getUserid());
         if(aftersave.getStockflag()){
             data.get(0).setWithdraw(aftersave.getAmount());
         } else  {
@@ -65,7 +65,7 @@ public class expensesservice {
         dailyexpensesRepository.save(data.get(0));
     }
     public void deleteexpensesfromstocks(stocks aftersave ) {
-        List<dailyexpenses> data = dailyexpensesRepository.findByTidAndType(aftersave.getId(),"Stocks");
+        List<dailyexpenses> data = dailyexpensesRepository.findByTidAndTypeAndUid(aftersave.getId(),"Stocks",aftersave.getUserid());
         dailyexpensesRepository.deleteMyEntityById(data.get(0).getId());
     }
     public  void  editorsavefromlent(lent aftersave) {
@@ -156,5 +156,47 @@ public class expensesservice {
         daysheetdata.setUid(Uid);
         daysheetdata.setDate(date);
         return daysheetRepository.save(daysheetdata);
+    }
+    public  void editorsaveaccounts(accounts data) {
+        List<daysheet> testdata = daysheetRepository.findByDateAndUid(data.getDate(),data.getUid());
+        daysheet singlenode = null;
+        if(testdata.size() == 0){
+            singlenode = this.addnewsheet(data.getDate(),data.getUid());
+        } else {
+            singlenode = testdata.get(0);
+        }
+        // check for exist data
+        Boolean existdata = false;
+        System.out.println(data.getId());
+        for (dailyexpenses eachnode: singlenode.getDailyexpenses()) {
+            System.out.println(eachnode.getTid());
+            if(eachnode.getTid() == data.getId() && eachnode.getType().equals("Accounts")) {
+                eachnode.setDeposit(data.getDeposit());
+                eachnode.setWithdraw(data.getWithdraw());
+                eachnode.setDiscription(data.getDiscription());
+                existdata = true;
+            }
+        }
+        if(!existdata){
+            dailyexpenses changedata = new dailyexpenses();
+            changedata.setDiscription(data.getDiscription());
+            changedata.setUid(data.getUid());
+            changedata.setDeposit(data.getDeposit());
+            changedata.setWithdraw(data.getWithdraw());
+            changedata.setType("Accounts");
+            changedata.setTid(data.getId());
+            singlenode.getDailyexpenses().add(changedata);
+        }
+        daysheetRepository.save(singlenode);
+        caluclatetota(data.getDate());
+    }
+    public void caluclatetota(LocalDate date) {
+        List<daysheet> totaldata = daysheetRepository.findByDate(date);
+        Long Total = Long.valueOf(0);
+        for (dailyexpenses eachnode : totaldata.get(0).getDailyexpenses()) {
+            Total = Total + eachnode.getWithdraw() - eachnode.getDeposit();
+        }
+        totaldata.get(0).setClosingbalance(Total);
+        daysheetRepository.save(totaldata.get(0));
     }
 }
