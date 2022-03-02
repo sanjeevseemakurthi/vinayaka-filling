@@ -19,7 +19,9 @@ public class accounts {
     private Long tid;
     private String discription;
     private String type;
+    @ColumnDefault("0")
     private Long deposit;
+    @ColumnDefault("0")
     private Long withdraw;
     private Long uid;
     private Long pid;

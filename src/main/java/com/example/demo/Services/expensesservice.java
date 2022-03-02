@@ -32,8 +32,10 @@ public class expensesservice {
         expensedata.setTid(aftersave.getId());
         if(aftersave.getStockflag()) {
             expensedata.setWithdraw(aftersave.getAmount());
+            expensedata.setDeposit(Long.valueOf(0));
             expensedata.setDiscription("stock added for property" + settingsdata.getProperty() + "subproperty" + settingsdata.getSubproperty());
         } else  {
+            expensedata.setWithdraw(Long.valueOf(0));
             expensedata.setDeposit(aftersave.getAmount());
             expensedata.setDiscription("sales added for property" + settingsdata.getProperty() + "subproperty" + settingsdata.getSubproperty());
         }
@@ -68,89 +70,6 @@ public class expensesservice {
         List<dailyexpenses> data = dailyexpensesRepository.findByTidAndTypeAndUid(aftersave.getId(),"Stocks",aftersave.getUserid());
         dailyexpensesRepository.deleteMyEntityById(data.get(0).getId());
     }
-    public  void  editorsavefromlent(lent aftersave) {
-        this.editorsaveexpense(aftersave.getUid(),aftersave.getId(),aftersave.getDate(),"Lent",aftersave.isFromperson(),aftersave.getAmount(),aftersave.getItem());
-        if(aftersave.getDeposits() != null && aftersave.getDeposits().length !=0){
-            for (Deposits data: aftersave.getDeposits()) {
-                this.editorsaveexpense(aftersave.getUid(),aftersave.getId(),data.getDate(),"Lent-Deposit",aftersave.isFromperson(),data.getAmount(),aftersave.getItem());
-            }
-        }
-        if(aftersave.getGiveextra() != null  && aftersave.getGiveextra().length !=0 ){
-            for (Deposits data: aftersave.getGiveextra()) {
-                this.editorsaveexpense(aftersave.getUid(),aftersave.getId(),data.getDate(),"Lent-AddedExtra",aftersave.isFromperson(),data.getAmount(),aftersave.getItem());
-            }
-        }
-    }
-    public  void  editorsavefromfinance(finance aftersave) {
-        this.editorsaveexpense(aftersave.getUid(),aftersave.getId(),aftersave.getDate(),"Finance",aftersave.isFromperson(),aftersave.getAmount(),aftersave.getItem());
-       if( aftersave.getDeposits() != null && aftersave.getDeposits().length !=0) {
-           for (Deposits data: aftersave.getDeposits()) {
-               this.editorsaveexpense(aftersave.getUid(),aftersave.getId(),data.getDate(),"Finance-Deposit",aftersave.isFromperson(),data.getAmount(),aftersave.getItem());
-           }
-       }
-       if(aftersave.getGiveextra() != null && aftersave.getGiveextra().length != 0 ){
-           for (Deposits data: aftersave.getGiveextra()) {
-               this.editorsaveexpense(aftersave.getUid(),aftersave.getId(),data.getDate(),"Finance-AddedExtra",aftersave.isFromperson(),data.getAmount(),aftersave.getItem());
-           }
-       }
-    }
-    public  void  editorsaveexpense(Long uid,Long tid,LocalDate tdate,String Type,Boolean fromperson,Long amount,String item){
-        dailyexpenses expensedata = new dailyexpenses();
-        expensedata.setUid(uid);
-        expensedata.setTid(tid);
-        expensedata.setType(Type);
-        if(Type.equals("Finance-Deposit") || Type.equals("Lent-Deposit")) {
-            if(fromperson){
-                expensedata.setWithdraw(amount);
-                expensedata.setDiscription("Your"+Type + " for "+item);
-            } else  {
-                expensedata.setDeposit(amount);
-                expensedata.setDiscription(Type + " for "+item);
-            }
-        } else  {
-            if(!fromperson){
-                expensedata.setWithdraw(amount);
-                expensedata.setDiscription(Type + " for "+item);
-            } else  {
-                expensedata.setDeposit(amount);
-                expensedata.setDiscription("Your "+Type + " for "+item);
-            }
-        }
-
-        List<daysheet> testdata = daysheetRepository.findByDateAndUid(tdate,uid);
-        daysheet singlenode = null;
-        if(testdata.size() == 0){
-            singlenode = this.addnewsheet(tdate,uid);
-        } else {
-            singlenode = testdata.get(0);
-        }
-        Long totalsum = Long.valueOf(0);
-        Boolean nodeexist = false;
-        if(singlenode.getDailyexpenses() != null) {
-           if(singlenode.getDailyexpenses().size() != 0) {
-               for (dailyexpenses everyexpense : singlenode.getDailyexpenses()) {
-                   if(everyexpense.getType().equals(Type) && everyexpense.getTid() == tid){
-                       nodeexist = true;
-                       everyexpense.setDeposit(expensedata.getDeposit());
-                       everyexpense.setWithdraw(expensedata.getWithdraw());
-                   } else {
-                       totalsum = totalsum +  everyexpense.getWithdraw() - everyexpense.getDeposit();
-                   }
-               }
-           }
-        }
-        if(!nodeexist){
-            List<dailyexpenses> appendata = new ArrayList<dailyexpenses>();
-            if(singlenode.getDailyexpenses() != null){
-                appendata = singlenode.getDailyexpenses();
-            }
-            appendata.add(expensedata);
-            singlenode.setDailyexpenses(appendata);
-        }
-        totalsum = totalsum +  expensedata.getDeposit() - expensedata.getWithdraw();
-        singlenode.setClosingbalance(totalsum);
-        daysheetRepository.save(singlenode);
-    }
     public  daysheet  addnewsheet(LocalDate date,Long Uid){
         daysheet daysheetdata = new daysheet();
         daysheetdata.setUid(Uid);
@@ -168,6 +87,7 @@ public class expensesservice {
         // check for exist data
         Boolean existdata = false;
         System.out.println(data.getId());
+        if(singlenode.getDailyexpenses() != null) {
         for (dailyexpenses eachnode: singlenode.getDailyexpenses()) {
             System.out.println(eachnode.getTid());
             if(eachnode.getTid() == data.getId() && eachnode.getType().equals("Accounts")) {
@@ -176,7 +96,7 @@ public class expensesservice {
                 eachnode.setDiscription(data.getDiscription());
                 existdata = true;
             }
-        }
+        }}
         if(!existdata){
             dailyexpenses changedata = new dailyexpenses();
             changedata.setDiscription(data.getDiscription());
@@ -185,7 +105,13 @@ public class expensesservice {
             changedata.setWithdraw(data.getWithdraw());
             changedata.setType("Accounts");
             changedata.setTid(data.getId());
-            singlenode.getDailyexpenses().add(changedata);
+            if(singlenode.getDailyexpenses() == null) {
+                List <dailyexpenses>  multiple =  new ArrayList<dailyexpenses>();
+                multiple.add(changedata);
+                singlenode.setDailyexpenses(multiple);
+            } else  {
+                singlenode.getDailyexpenses().add(changedata);
+            }
         }
         daysheetRepository.save(singlenode);
         caluclatetota(data.getDate());
@@ -193,10 +119,90 @@ public class expensesservice {
     public void caluclatetota(LocalDate date) {
         List<daysheet> totaldata = daysheetRepository.findByDate(date);
         Long Total = Long.valueOf(0);
+        if(totaldata.get(0).getDailyexpenses() != null) {
         for (dailyexpenses eachnode : totaldata.get(0).getDailyexpenses()) {
             Total = Total + eachnode.getWithdraw() - eachnode.getDeposit();
-        }
+        }}
         totaldata.get(0).setClosingbalance(Total);
         daysheetRepository.save(totaldata.get(0));
+    }
+    public void addfinanceexpense(finance data) {
+        List<daysheet> testdata = daysheetRepository.findByDateAndUid(data.getDate(),data.getUid());
+        daysheet singlenode = null;
+        if(testdata.size() == 0){
+            singlenode = this.addnewsheet(data.getDate(),data.getUid());
+        } else {
+            singlenode = testdata.get(0);
+        }
+        Boolean existdata = false;
+        System.out.println(data.getId());
+        if(singlenode.getDailyexpenses() != null) {
+        for (dailyexpenses eachnode: singlenode.getDailyexpenses()) {
+            System.out.println(eachnode.getTid());
+            if(eachnode.getTid() == data.getId() && eachnode.getType().equals("Finance")) {
+                eachnode.setWithdraw(data.getAmount());
+                existdata = true;
+            }
+        }}
+        if(!existdata){
+            dailyexpenses changedata = new dailyexpenses();
+            changedata.setDiscription("Finance given");
+            changedata.setUid(data.getUid());
+            changedata.setDeposit(Long.valueOf(0));
+            changedata.setWithdraw(data.getAmount());
+            changedata.setType("Finance");
+            changedata.setTid(data.getId());
+            if(singlenode.getDailyexpenses() == null) {
+                List <dailyexpenses>  multiple =  new ArrayList<dailyexpenses>();
+                multiple.add(changedata);
+                singlenode.setDailyexpenses(multiple);
+            } else  {
+                singlenode.getDailyexpenses().add(changedata);
+            }
+        }
+        daysheetRepository.save(singlenode);
+        caluclatetota(data.getDate());
+        for (Deposits eachnode:data.getDeposits()) {
+            addoredittransaction(eachnode);
+        }
+    }
+    public void addoredittransaction(Deposits data) {
+        List<daysheet> testdata = daysheetRepository.findByDateAndUid(data.getDate(),data.getUid());
+        daysheet singlenode = null;
+        if(testdata.size() == 0){
+            singlenode = this.addnewsheet(data.getDate(),data.getUid());
+        } else {
+            singlenode = testdata.get(0);
+        }
+        // check for exist data
+        Boolean existdata = false;
+        if(singlenode.getDailyexpenses() != null) {
+        for (dailyexpenses eachnode: singlenode.getDailyexpenses()) {
+            System.out.println(eachnode.getTid());
+            if(eachnode.getTid() == data.getId() && eachnode.getType().equals("Finance Transaction")) {
+                eachnode.setDeposit(data.getDeposit());
+                eachnode.setWithdraw(data.getWithdraw());
+                eachnode.setDiscription(data.getDiscription());
+                existdata = true;
+            }
+        }}
+        if(!existdata){
+            dailyexpenses changedata = new dailyexpenses();
+            changedata.setDiscription(data.getDiscription());
+            changedata.setUid(data.getUid());
+            changedata.setDeposit(data.getDeposit());
+            changedata.setWithdraw(data.getWithdraw());
+            changedata.setType("Finance Transaction");
+            changedata.setTid(data.getId());
+            if(singlenode.getDailyexpenses() == null) {
+                List <dailyexpenses>  multiple =  new ArrayList<dailyexpenses>();
+                multiple.add(changedata);
+                singlenode.setDailyexpenses(multiple);
+            } else  {
+                singlenode.getDailyexpenses().add(changedata);
+            }
+        }
+        daysheetRepository.save(singlenode);
+        caluclatetota(data.getDate());
     }
 }

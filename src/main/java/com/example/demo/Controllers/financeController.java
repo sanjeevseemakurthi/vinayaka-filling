@@ -37,33 +37,15 @@ public class financeController {
         String username = jwtUtility.getUsernameFromToken(Token);
         userdata userdata = userdetailsRepository.findByUsername(username);
         data.setUid(userdata.getId());
+        for (Deposits eachnode: data.getDeposits()) {
+            eachnode.setUid(userdata.getId());
+        }
         finance aftersave = financeRepository.save(data);
-        expensesservice.editorsavefromfinance(aftersave);
         JSONObject result = new JSONObject();
         result.put("reesult","sucess");
+        expensesservice.addfinanceexpense(aftersave);
         return result.toString();
     }
-    @PostMapping("addnewpersonfin")
-    public String addnewpersonfin(@RequestHeader(value = "Authorization") String authorization, @RequestBody addnewpersonfin data) {
-
-        String Token = authorization.replace("Bearer ","");
-        String username = jwtUtility.getUsernameFromToken(Token);
-        userdata userdata = userdetailsRepository.findByUsername(username);
-        people peopledata =data.getPeopledata();
-        finance financedata =data.getFinancedata();
-        peopledata.setUid(userdata.getId());
-        financedata.setUid(userdata.getId());
-        people aftersave = peopleRepository.save(peopledata);
-
-        while (aftersave == null) {
-
-        }
-        financedata.setPid(aftersave.getId());
-        finance test = financeRepository.save(financedata);
-        expensesservice.editorsavefromfinance(test);
-        return "Sucess";
-    }
-
     @PostMapping("getpersonfinance")
     public String getpersonfinance(@RequestHeader(value = "Authorization") String authorization, @RequestBody String data) {
         JSONObject demo = new JSONObject(data);

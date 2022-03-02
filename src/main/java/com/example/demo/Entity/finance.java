@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @Entity
@@ -17,10 +18,9 @@ public class finance {
     private String item;
     private long Qty;
     private LocalDate date;
-    @Column(length = 3000)
-    private Deposits deposits[];
-    @Column(length = 3000)
-    private Deposits giveextra[];
+    @OneToMany(targetEntity = Deposits.class,cascade = CascadeType.ALL)
+    @JoinColumn(name = "joinid",referencedColumnName = "id")
+    List<Deposits> deposits;
     private long sno;
     private long uid;
     private boolean isactive;
@@ -74,11 +74,11 @@ public class finance {
         this.date = date;
     }
 
-    public Deposits[] getDeposits() {
+    public List<Deposits> getDeposits() {
         return deposits;
     }
 
-    public void setDeposits(Deposits[] deposits) {
+    public void setDeposits(List<Deposits> deposits) {
         this.deposits = deposits;
     }
 
@@ -106,6 +106,14 @@ public class finance {
         this.isactive = isactive;
     }
 
+    public boolean isFromperson() {
+        return fromperson;
+    }
+
+    public void setFromperson(boolean fromperson) {
+        this.fromperson = fromperson;
+    }
+
     @Override
     public String toString() {
         return "finance{" +
@@ -115,28 +123,11 @@ public class finance {
                 ", item='" + item + '\'' +
                 ", Qty=" + Qty +
                 ", date=" + date +
-                ", deposits=" + Arrays.toString(deposits) +
-                ", giveextra=" + Arrays.toString(giveextra) +
+                ", deposits=" + deposits +
                 ", sno=" + sno +
                 ", uid=" + uid +
                 ", isactive=" + isactive +
                 ", fromperson=" + fromperson +
                 '}';
-    }
-
-    public Deposits[] getGiveextra() {
-        return giveextra;
-    }
-
-    public void setGiveextra(Deposits[] giveextra) {
-        this.giveextra = giveextra;
-    }
-
-    public boolean isFromperson() {
-        return fromperson;
-    }
-
-    public void setFromperson(boolean fromperson) {
-        this.fromperson = fromperson;
     }
 }
