@@ -46,6 +46,7 @@ public class securityconfig extends WebSecurityConfigurerAdapter {
 	            .authorizeRequests()
 	            .antMatchers("/authenticate").permitAll()
 	            .antMatchers("/newuser").permitAll()
+				.antMatchers("/test").permitAll()
 	            .anyRequest().authenticated()
 	            .and().sessionManagement()
 	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -49,7 +49,7 @@ public class AuthController {
 	}
 	@PostMapping("/authenticate")
 	public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
-
+		System.out.println("test");
 	    try{
 	        authenticationManager.authenticate(
 	                new UsernamePasswordAuthenticationToken(
